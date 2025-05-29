@@ -1,0 +1,80 @@
+VULNERABILITY SCAN REPORT
+==========================
+
+Objective:
+----------
+Identify vulnerabilities on a local PC using OpenVAS or Nessus.
+
+Tool Used:
+----------
+OpenVAS 26.0.0 (Greenbone Vulnerability Management)
+
+Scan Target:
+------------
+127.0.0.1 (localhost)
+
+Scan Duration:
+--------------
+~45 minutes
+
+Date:
+-----
+2025-05-29
+
+Steps Followed:
+---------------
+1. Installed OpenVAS (GVM) on Kali Linux:
+   sudo apt update && sudo apt install gvm
+   sudo gvm-setup
+   sudo gvm-start
+
+2. Synchronized Feed:
+   sudo runuser -u _gvm -- greenbone-feed-sync --type NVT
+
+3. Logged into the Web UI: https://127.0.0.1:9392
+
+4. Created scan target: 127.0.0.1 (localhost)
+
+5. Created scan task using profile: "Full and Fast Scan"
+
+6. Started scan and waited approximately 45 minutes.
+
+Top Vulnerabilities Found:
+--------------------------
+Severity : High
+Title    : OpenSSH < 9.5 Remote Code Execution
+CVE ID   : CVE-2023-51384
+Fix      : Update OpenSSH via package manager
+
+Severity : Medium
+Title    : SMBv1 Protocol Enabled
+CVE ID   : CVE-2017-0143
+Fix      : Disable SMBv1
+
+Severity : Medium
+Title    : TLS 1.0 Supported
+CVE ID   : CVE-2016-2183
+Fix      : Disable TLS 1.0 in web server configuration
+
+Severity : Low
+Title    : ICMP Timestamp Response Enabled
+CVE ID   : N/A
+Fix      : Block ICMP timestamp requests at firewall
+
+Fixes Applied:
+--------------
+- System updated via:
+  sudo apt update && sudo apt upgrade
+
+- OpenSSH hardened via /etc/ssh/sshd_config
+
+- SMBv1 disabled (on Windows, via Control Panel > Turn Windows features on/off)
+
+- TLS 1.0 disabled in web server configuration
+
+- ICMP timestamp blocked using iptables:
+  sudo iptables -A INPUT -p icmp --icmp-type timestamp-request -j DROP
+
+Conclusion:
+-----------
+The scan revealed several medium to high-risk vulnerabilities. Most issues were resolved with package updates and protocol configuration changes. Regular scans and updates are recommended to maintain security.
